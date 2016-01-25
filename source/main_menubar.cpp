@@ -657,8 +657,7 @@ void MainMenuBar::OnImportMonsterData(wxCommandEvent& WXUNUSED(event))
 		for(uint32_t i = 0; i < paths.GetCount(); ++i) {
 			wxString error;
 			wxArrayString warnings;
-			bool ok = creature_db.importXMLFromOT(FileName(paths[i]), error, warnings);
-			if(ok)
+			if(creature_db.importXMLFromOT(FileName(paths[i]), error, warnings))
 				gui.ListDialog(wxT("Monster loader errors"), warnings);
 			else
 				wxMessageBox(wxT("Error OT data file \"") + paths[i] + wxT("\".\n") + error, wxT("Error"), wxOK | wxICON_INFORMATION, gui.root);

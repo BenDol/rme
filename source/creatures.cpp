@@ -19,6 +19,10 @@
 
 #include "main.h"
 
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string.hpp>
+
+
 #include "gui.h"
 #include "materials.h"
 #include "brush.h"
@@ -310,7 +314,20 @@ bool CreatureDatabase::importXMLFromOT(const FileName& filename, wxString& error
 			}
 
 			FileName monsterFile(filename);
-			monsterFile.SetFullName(wxString(attribute.as_string(), wxConvUTF8));
+			std::string file = std::string(attribute.as_string());
+
+			std::vector<std::string> subDirs;
+			boost::split(subDirs, file, boost::is_any_of("/"));
+
+			std::string name = subDirs.at(subDirs.size()-1);
+			subDirs.pop_back();
+
+			for (auto& dir : subDirs) {
+				monsterFile.AppendDir(wxString(dir.c_str(), wxConvUTF8));
+			}
+
+			monsterFile.SetFullName(wxString(name.c_str(), wxConvUTF8));
+			std::string filePath =  monsterFile.GetFullPath();
 
 			pugi::xml_document monsterDoc;
 			pugi::xml_parse_result monsterResult = monsterDoc.load_file(monsterFile.GetFullPath().mb_str());
